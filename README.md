@@ -121,13 +121,6 @@ Pending update counting can be slow if recalculated on every login. The banner c
 /run/linux-startup-status-updates.stamp
 ```
 
-## Suggested screenshots
-
-```text
-screenshots/raspberry-pi-login.png
-screenshots/linux-mint-terminal.png
-```
-
 ## GitHub setup
 
 ```bash
