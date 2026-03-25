@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Linux Startup Status Viewer
+Comment=Open the Linux Startup Status banner in a terminal window
+Exec=bash -lc '/usr/local/bin/linux-startup-status-viewer'
+Icon=utilities-terminal
+Terminal=true
+Categories=System;Utility;
+StartupNotify=false

@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+CORE_SCRIPT="${CORE_SCRIPT:-/usr/local/bin/linux-startup-status}"
+if [ ! -x "$CORE_SCRIPT" ]; then
+  CORE_SCRIPT="$SCRIPT_DIR/../linux-startup-status"
+fi
+
+PAUSE_SECONDS="${PAUSE_SECONDS:-10}"
+ENABLE_PAUSE="${ENABLE_PAUSE:-auto}"
+
+"$CORE_SCRIPT"
+
+should_pause() {
+  [ -t 0 ] || return 1
+  [ -t 1 ] || return 1
+  [ -n "${SSH_CONNECTION:-}" ] && return 1
+  [ -n "${SSH_TTY:-}" ] && return 1
+
+  case "$ENABLE_PAUSE" in
+    1|true|yes|on|force) return 0 ;;
+    0|false|no|off) return 1 ;;
+    auto)
+      [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-}" ] || [ -n "${XDG_CURRENT_DESKTOP:-}" ]
+      return
+      ;;
+    *) return 1 ;;
+  esac
+}
+
+if should_pause; then
+  printf 'Press any key to continue... '
+  if read -r -n 1 -s -t "$PAUSE_SECONDS" _; then
+    printf '\n'
+  else
+    printf 'timeout\n'
+  fi
+fi
